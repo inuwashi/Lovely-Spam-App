@@ -1,0 +1,18 @@
+#photo {
+	width: 400px;
+	height: 300px;
+}
+
+h1 {
+	font-size: 18px;
+}
+
+h2 {
+	font-size: 9px;
+}
+
+#wrapper {
+	width: 400px;
+	min-height: 300px;
+}
+

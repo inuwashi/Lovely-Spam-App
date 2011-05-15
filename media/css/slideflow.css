@@ -1,0 +1,24 @@
+#slideflow {
+	height: 90px;
+	position: relative;
+	padding-bottom:20px;
+	cursor: default;
+}
+
+#slideflow img {
+	position:absolute;
+	top:0px;
+}
+
+/* For future use - these don't work with IE6 */
+.closedHand {
+	cursor: url(../images/closedhand.cur), move !important;
+}
+
+.openHand {
+	cursor: url(../images/openhand.cur),  default !important;
+}
+
+.selectable {
+	cursor: pointer !important;
+}

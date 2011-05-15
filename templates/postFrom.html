@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+
+{% block script %}
+selectThmbnail = function(loadID,loadURL){
+    $('selectdPayload').value=loadID;
+    $('showPayload').update(new Element('img',{'src':'{{MEDIA_URL}}/'+loadURL, height:'250px'}));
+    $('payloadPreview').show();
+    $('thumbnails').hide();
+}
+
+resetThumbnail = function(){
+    $('payloadPreview').hide();
+    $('thumbnails').show();
+    $('selectdPayload').value='';
+    $('showPayload').update('');
+}
+
+{% endblock %}
+
+
+{% block addtionalJSfiles%}
+    <script language="javascript" SRC="{{MEDIA_URL}}/scriptaculous/effects.js"></script>
+{% endblock %}
+
+
+{% block addtionalCSSfiles%}
+{% endblock %}
+
+
+{% block startScript %}
+var randIsGood = "Random strings are better";
+
+//Resetting the default
+$("sitesSelect").selectedIndex=0;
+$("blurbSelect").selectedIndex=0;
+$("blurbData").update(randIsGood);
+
+
+$("sitesSelect").observe('change', function(event){
+    siteID = $("sitesSelect").options[$("sitesSelect").selectedIndex].value;
+
+    if (siteID.length > 0){
+        $("siteTitleDiv").update($("sitesSelect").options[$("sitesSelect").selectedIndex].text);
+        new Ajax.Updater('siteDescriptionDiv', '/description/'+siteID+'/', {});
+        new Ajax.Request('/targets/'+siteID+'/',{
+            onSuccess : function(transport){
+                newTargets = transport.responseJSON;
+
+		//Remove Old Targets
+		oldTarget = $('siteTargetsDiv').childElements();		
+		oldTarget.each(function(e){e.remove();});
+		
+		// Create new select 
+		var selectTarget = new Element('select',{id:'selectTarget'});
+		var initialOption = new Element('option',{'value':''}).update('Select Target');
+		selectTarget.insert(initialOption);
+		newTargets.each(function(e){
+		    var newOption = new Element('option',{'value':e.pk}).update(e.fields.name);
+		    selectTarget.insert(newOption);
+		});
+
+		$('siteTargetsDiv').insert(selectTarget);
+		selectTarget.stopObserving('change');
+		selectTarget.observe('change', function(event){
+		    targetID = selectTarget.options[selectTarget.selectedIndex].value;
+		    //Check to see if the ID is actually oin the list
+		    if (newTargets.any(function(a){return a.pk==targetID;})){
+			selectedTarget = newTargets.find(function(f){return f.pk==targetID;});
+			$("targetTitleDiv").update(selectedTarget.fields.name);
+			$("targetDescriptionDiv").update(selectedTarget.fields.description);
+		    }else{
+			alert("There was an issue, pleas contact us.");
+		    }
+		});
+            }
+        });
+    }
+});
+
+
+
+$("blurbSelect").observe('change', function(event){
+    blurbID = $("blurbSelect").options[$("blurbSelect").selectedIndex].value;
+
+    if (blurbID==""){
+	$("blurbData").update(randIsGood);
+    }else{
+        new Ajax.Updater('blurbData', '/blurb/'+blurbID+'/15/', {});
+    }
+    
+});
+
+$("doPostLink").observe('click', function(event){
+    targetID = $("selectTarget").options[selectTarget.selectedIndex].value;
+    blurbID = $("blurbSelect").options[$("blurbSelect").selectedIndex].value;
+
+    url ="/post/"+targetID+"/BLURB_ID="+blurbID+"&PAYLOAD_ID=";
+
+});
+
+
+{% endblock %}
+
+{% block content %}
+<div id="selectSiteDiv">
+  <select id="sitesSelect">
+    <option value="" SELECTED>Select A Site</option>
+    {% for site in sites %}
+    <option value="{{site.id}}">{{ site.name }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div id="siteTitleDiv"></div>
+<div id="siteDescriptionDiv"></div>
+<div id="siteTargetsDiv"></div>
+<div id="targetTitleDiv"></div>
+<div id="targetDescriptionDiv"></div>
+
+<div id="payload">
+  <div id="thumbnails" style="float:left">
+    Plese selecte an image to spam with:<br>
+    {% for load in payloads %}
+    <a href="#" title="{{load.name}}" onclick="selectThmbnail({{load.id}},'{{load}}')">
+      <img src="{{MEDIA_URL}}/{{load}}" alt="{{load.name}}" width="120px" height="120px;"/>
+    </a><br>
+    {% endfor %}
+  </div>
+  <div id="payloadPreview" style="float:left; display:none;">
+    Selected Image: <sub><a href="#" onclick="resetThumbnail();">Pick another pic</a></sub><br>
+    <div id="showPayload"></div>
+  </div>
+  <input type="hidden" id="selectdPayload" value=""/>
+</div>
+<div id="blurbDiv">
+  Plese selecte a blurb to spam with:<br>
+  <select id="blurbSelect">
+    <option value="">Generate randome blurb (Prefered)</option>
+    {% for blurb in blurbes %}
+    <option value="{{blurb.id}}">{{blurb.name}}</option>
+    {% endfor %}
+  </select>
+  <div id="blurbData"></div>
+</div>
+<div id="">
+    <a href ="#" id="doPostLink">Post Please</a>
+</div>
+{% endblock %}
