@@ -4,7 +4,7 @@ from django.core import serializers
 
 
 
-from settings import MEDIA_URL
+from settings import MEDIA_URL,MEDIA_ROOT
 from lovelyspam.models import *
 
 
@@ -92,7 +92,7 @@ def doPost(request,targetID):
                 #Obj refrance as opposed to the actual value
                 if attr.name == "PAYLOAD":
                     value = Payload.objects.get(id =refID).load
-                    attributes += ' %s /var/www/app_media/%s' % (attr.flag, value)
+                    attributes += ' %s %s%s' % (attr.flag, MEDIA_ROOT, value)
                 elif attr.name == "MESSAGE":
                     value = Blurb.objects.get(id =refID).crap
                     attributes += ' %s "%s"' % (attr.flag, value)
