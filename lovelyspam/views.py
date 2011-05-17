@@ -99,7 +99,14 @@ def doPost(request,targetID):
                 else:
                     return HttpResponse("Unknow attribute : %s" % attr.name)
 
-    cmd =" python %s %s" % (theTarget.script.script, attributes)
+    cmd ="python %s %s" % (theTarget.script.script, attributes)
 
-    return HttpResponse(cmd)
+    import commands
+    out = commands.getoutput(cmd)
+    if "refresh" in out.decode('utf-8'):
+        return HttpResponse("You just spammed some pedo's days")
+    else:        
+        return HttpResponse("Something went wrong, please try again.")
+
+    #return HttpResponse(cmd+'<br>'+'_-_'.join(out.decode('utf-8').split(' ')) )
 

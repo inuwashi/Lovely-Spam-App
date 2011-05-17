@@ -95,8 +95,9 @@ $("doPostLink").observe('click', function(event){
     targetID = $("selectTarget").options[selectTarget.selectedIndex].value;
     blurbID = $("blurbSelect").options[$("blurbSelect").selectedIndex].value;
 
-    url ="/post/"+targetID+"/BLURB_ID="+blurbID+"&PAYLOAD_ID=";
-
+    url ="/post/"+targetID+"/?MESSAGE_ID="+blurbID+"&PAYLOAD_ID="+$("selectdPayload").value;
+    alert(url);
+    $("tmp").update(url);
 });
 
 
@@ -145,5 +146,6 @@ $("doPostLink").observe('click', function(event){
 </div>
 <div id="">
     <a href ="#" id="doPostLink">Post Please</a>
+    <span id="tmp"></span>
 </div>
 {% endblock %}
