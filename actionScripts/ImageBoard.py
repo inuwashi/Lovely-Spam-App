@@ -4,6 +4,7 @@ import mimetypes
 import random
 import sys
 import Image, ImageDraw
+import string, tempfile
 
 def genRandomText(wordCount=4):
     words = open('/home/dj/app/actionScripts/nouns.txt').readlines()
@@ -15,13 +16,23 @@ def prepPayload(uri):
     """
     Some image boards recodnize images so we chnage them a little
     """
+    # Randomize file name
+    payloadNameParts = uri.split(".")
+    payloadName = "%s%s.%s" % (''.join(payloadNameParts[:-1]),genRandomText(1),payloadNameParts[-1])
+    
+    # Move to /tmp 
+    payloadNameParts = payloadName.split("/")
+    payloadName = "/tmp/%s" % payloadNameParts[-1]
+
+    # Add some random pixels
     img  = Image.open(uri)
     draw = ImageDraw.Draw(img)
     width,height = img.size
-    c = "#"+''.join(random.sample("0123456789ABCDEF",6))
-    draw.point((random.randint(1,width),random.randint(1,height)), fill=c)
+    draw.point((random.randint(1,width),random.randint(1,height)), fill=random.randint(1,128))
     del draw
-    return img
+    img.save(payloadName)
+    del img
+    return open(payloadName)
     
     
 
@@ -46,20 +57,17 @@ def doIBPost(url, payload, name=None, email=None, subject=None, message=None, su
 
     If no success value is provided the just return the HTML result of the form.
     """
-    fileName = payload.name
-    payload = prepPayload(fileName)
+
+    
+    payload = prepPayload(payload)
 
     # Get and approve mime type
-    mimeType = mimetypes.guess_type(fileName)[0]
+    mimeType = mimetypes.guess_type(payload.name)[0]
     allowedTypes = ['image/png','image/gif','image/jpeg']
     if mimeType not in allowedTypes:
         raise TypeError('Only PNG, GIF and JPG allowed.')
 
-    # Randomize file name
-    payloadNameParts = fileName.split(".")
-    payloadName = "%s%s.%s" % (''.join(payloadNameParts[:-1]),genRandomText(1),payloadNameParts[-1])
-    payloadName = payload.name
-    print payloadName
+
 
 
     # Make sure we have all the neaded values
@@ -68,7 +76,7 @@ def doIBPost(url, payload, name=None, email=None, subject=None, message=None, su
     if not email:
         email = '%s@%s.%s' % tuple(genRandomText(2).split()+[random.choice(['com','net','org']),])
     if not message: 
-        message = genRandomText(random.randint(10, 15))+(random.randint(25, 35)*'\n')+genRandomText(random.randint(15, 25))+(random.randint(25, 35)*'\n')+genRandomText(random.randint(10, 15))
+        message = genRandomText(random.randint(20, 45))+(random.randint(45, 65)*'\n')+genRandomText(random.randint(35, 55))+(random.randint(45, 65)*'\n')+genRandomText(random.randint(20, 45))
 
 
 
@@ -84,7 +92,7 @@ def doIBPost(url, payload, name=None, email=None, subject=None, message=None, su
     br.form['email']=email
     br.form['subject']=subject
     br.form['message']=message
-    br.form.add_file(payload, mimeType, payloadName.split("/")[-1])
+    br.form.add_file(payload, mimeType, payload.name.split("/")[-1])
 
     assert br.viewing_html()
     #print '\ntitle\n',br.title()
@@ -124,7 +132,7 @@ if __name__ == "__main__":
                         )
     parser.add_argument('-p','--payload',
                         help='File to post',
-                        type=file,
+                        #type=file,
                         required=True
                         ) 
     parser.add_argument('-n','--name',
