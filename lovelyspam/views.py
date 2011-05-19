@@ -94,7 +94,7 @@ def doPost(request,targetID):
                     value = Payload.objects.get(id =refID).load
                     attributes += ' %s %s%s' % (attr.flag, MEDIA_ROOT, value)
                 elif attr.name == "MESSAGE":
-                    value = Blurb.objects.get(id =refID).crap
+                    value = Blurb.objects.get(id =refID).crap.encode('ascii','ignore')
                     attributes += ' %s "%s"' % (attr.flag, value)
                 else:
                     return HttpResponse("Unknow attribute : %s" % attr.name)
@@ -103,7 +103,7 @@ def doPost(request,targetID):
 
     import commands
     out = commands.getoutput(cmd)
-    if "refresh" in out.decode('utf-8'):
+    if "refresh" in out:
         return HttpResponse("You just spammed some pedo's days")
     else:        
         return HttpResponse("Something went wrong, please try again.")
