@@ -5,6 +5,7 @@ import random
 import sys
 import Image, ImageDraw
 import string, tempfile
+from ClientForm import ControlNotFoundError
 
 def genRandomText(wordCount=4):
     words = open('/home/dj/app/actionScripts/nouns.txt').readlines()
@@ -88,8 +89,15 @@ def doIBPost(url, payload, name=None, email=None, subject=None, message=None, su
 
     b1 = br.response()
     br.select_form(nr=0)
-    br.form['name']=name
-    br.form['email']=email
+    try:
+        br.form['name']=name
+    except ControlNotFoundError:
+        pass
+    try:
+        br.form['email']=email
+    except ControlNotFoundError:
+        pass
+
     br.form['subject']=subject
     br.form['message']=message
     br.form.add_file(payload, mimeType, payload.name.split("/")[-1])
