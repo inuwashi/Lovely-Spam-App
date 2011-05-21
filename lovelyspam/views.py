@@ -103,10 +103,15 @@ def doPost(request,targetID):
 
     import commands
     out = commands.getoutput(cmd)
-    if "refresh" in out:
-        return HttpResponse("You just spammed some pedo's days")
-    else:        
-        return HttpResponse("Something went wrong, please try again.")
+    out = out.decode("utf-8").encode("ascii", "xmlcharrefreplace")
+
+    if theTarget.successString in out:
+        return HttpResponse("You just spammed some pedo's days<br>"+out)
+    else:
+        #from django.core.mail import mail_admins
+        #mail_admins('Post failed for some reason', 'Output was : '+str(out))
+        return HttpResponse("Something went wrong, please try again.<br>"+out)
 
     #return HttpResponse(cmd+'<br>'+'_-_'.join(out.decode('utf-8').split(' ')) )
 
+ 
