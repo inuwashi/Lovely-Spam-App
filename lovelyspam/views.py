@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.core import serializers
-
+from django.core.mail import mail_admins
 
 
 from settings import MEDIA_URL,MEDIA_ROOT
@@ -101,16 +101,32 @@ def doPost(request,targetID):
 
     cmd ="python %s %s" % (theTarget.script.script, attributes)
 
+    #Running  the action script
     import commands
     out = commands.getoutput(cmd)
+
+    #Clening up output 
     out = out.decode("utf-8").encode("ascii", "xmlcharrefreplace")
 
+
+    #Pparsing request data fo email / log
+    req = "%s?%s" % (request.path, '&'.join(["%s=%s" % (x,request.REQUEST[x]) for x in request.REQUEST]))
+
+
     if theTarget.successString in out:
-        return HttpResponse("You just spammed some pedo's days<br>"+out)
+        mail_admins(
+            'I just posted!', 
+            'Request was  : %s\n\nOutput was : %s' % (req,out),
+            'updates@lovelyspam.com'
+            )
+        return HttpResponse("You just spammed some pedo's days")
     else:
-        #from django.core.mail import mail_admins
-        #mail_admins('Post failed for some reason', 'Output was : '+str(out))
-        return HttpResponse("Something went wrong, please try again.<br>"+out)
+        mail_admins(
+            'Post failed for some reason!', 
+            'Request was  : %s\n\nOutput was : %s' % (req,out),
+            'errors@lovelyspam.com'
+            )
+        return HttpResponse("Something went wrong, please try again.")
 
     #return HttpResponse(cmd+'<br>'+'_-_'.join(out.decode('utf-8').split(' ')) )
 
