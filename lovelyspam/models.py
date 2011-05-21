@@ -47,6 +47,7 @@ class Target(models.Model):
     site = models.ForeignKey(TargetSite)
     script = models.ForeignKey(ActionScript)
     active  = models.BooleanField(default=True)
+    successString = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.name
