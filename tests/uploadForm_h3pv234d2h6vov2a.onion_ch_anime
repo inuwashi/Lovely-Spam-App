@@ -1,0 +1,11 @@
+<form name="postform" id="postform" action="imgboard.php" method="post" enctype="multipart/form-data">
+! <input type="hidden" name="MAX_FILE_SIZE" value="2097152">
+! <input type="hidden" name="parent" value="0">1
+! <input type="text" name="name" size="28" maxlength="75" accesskey="n">
+! <input type="text" name="email" size="28" maxlength="75" accesskey="e">
+! <input type="text" name="subject" size="40" maxlength="75" accesskey="s">
+! <textarea id="msgarea" name="message" cols="48" rows="4" accesskey="m"></textarea>
+! <input type="file" name="file" size="35" accesskey="f">
+<input type="password" name="password" size="8" accesskey="p">
+<input type="submit" value="Send" accesskey="z">
+</form>

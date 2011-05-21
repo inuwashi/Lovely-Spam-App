@@ -1,0 +1,30 @@
+import re
+import mechanize
+
+br = mechanize.Browser()
+#br.set_proxies({"http" : "http://localhost:8118"})
+
+
+#data = { 'foo':         'bar',
+#         'file1':    {'fd' : open("/root/testpilot.png"),
+#                      'filename':    'testpilot.png'}
+#        }
+
+
+br.open("http://test.lovelyspam.org/form/")
+
+b1 = br.response()
+form = br.select_form(nr=0)
+
+
+assert br.viewing_html()
+
+print '\ntitle\n',br.title()
+
+print '\nurl\n',b1.geturl()
+
+print '\ninfo\n',b1.info()
+
+print '\nhtml\n',b1.read()
+
+print '\nform\n',br.form

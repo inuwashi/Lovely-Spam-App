@@ -1,0 +1,12 @@
+import urllib2_file
+import urllib2
+
+data = { 'foo':         'bar',
+         'file1':    {'fd' : open("/root/testpilot.png"),
+                      'filename':    'testpilot.png'}
+        }
+
+
+u = urllib2.urlopen('http://test.lovelyspam.org/receive/', data)
+
+

@@ -1,0 +1,9 @@
+import pycurl
+c1 = pycurl.Curl()
+c1.setopt(pycurl.URL, 'https://check.torproject.org/')
+c1.setopt(pycurl.PROXY, 'localhost')
+c1.setopt(pycurl.PROXYPORT, 9050)
+c1.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
+
+c1.perform() 
+

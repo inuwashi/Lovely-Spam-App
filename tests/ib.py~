@@ -1,0 +1,48 @@
+import re
+import mechanize
+
+
+
+
+def doPost(): 
+    br = mechanize.Browser()
+    br.set_proxies({"http" : "http://localhost:8118"})
+
+
+    br.open("http://h3pv234d2h6vov2a.onion/ch/anime/")
+
+    b1 = br.response()
+    br.select_form(nr=0)
+    br.form['name']="My little Fox"
+    br.form['email']="name@domain.com"
+    br.form['subject']="My little Fox"
+    br.form['message']='THE laws of God, the laws of man,\nHe may keep that will and can;\nNot I: let God and man decree\nLaws for themselves and not for me;\nAnd if my ways are not as theirs\nLet them mind their own affairs.\nTheir deeds I judge and much condemn,\nYet when did I make laws for them?\nPlease yourselves, say I , and they\nNeed only look the other way.'
+    br.form.add_file(open("testpilot.png"), "image/png", "testpilot.png")
+
+    assert br.viewing_html()
+    print '\ntitle\n',br.title()
+    print '\nurl\n',b1.geturl()
+    print '\ninfo\n',b1.info()
+    #print '\nhtml\n',b1.read()
+    print '\nform\n',br.form
+
+
+    b2 = br.submit(nr=0)
+
+    assert br.viewing_html()
+    print '\ntitle\n',br.title()
+    print '\nurl\n',b2.geturl()
+    print '\ninfo\n',b2.info()
+    print '\nhtml\n',b2.read()
+
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Post an image to a chan style image borad.')
+    parser.add_argument('-u','--url',
+                        help='url of image board page with upload form')
+
+    args = parser.parse_args()
+    print str(args)

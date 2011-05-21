@@ -1,0 +1,39 @@
+
+extend urllib2 to enable uploading files using multipart/form-data
+
+I was looking for something to make me able to upload files to my photo web site (http://gallery.menalto.com/).
+Inspired by http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
+
+Example:
+
+import urllib2_file
+import urllib2
+
+data = { 'foo':         'bar',
+         'form_name':    open("/lib/libc.so.1")
+        }
+(send something like: 'Content-Disposition: form-data; name="form_name"; filename="form_name";' )
+
+Or if you want to specify a different filename:
+data = { 'foo':         'bar',
+         'form_name':   { 'fd':          open('/lib/libresolv.so.2',
+                          'filename':    'libresolv.so'}
+        }
+(send something like: 'Content-Disposition: form-data; name="form_name"; filename="libresolv.so";' )
+
+u = urllib2.urlopen('http://site.com/path/upload.php', data)
+
+
+THANKS to:
+- bug fix: kosh @T aesaeion.com
+- HTTPS support : Ryan Grow <ryangrow @T yahoo.com>
+ - upload is now done with chunks (Adam Ambrose)
+ - UTF-8 filenames are now allowed (Eli Golovinsky)
+ - File object is no more mandatory, Object only needs to have seek() read() attributes (Eli Golovinsky)
+ - StringIO workaround (Laurent Coustet), does not work with cStringIO
+
+ Also modified by Adam Ambrose (aambrose @T pacbell.net) to write data in
+chunks (hardcoded to CHUNK_SIZE for now), so the entire contents of the file
+don't need to be kept in memory.
+
+
