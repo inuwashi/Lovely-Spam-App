@@ -103,3 +103,4 @@ EMAIL_HOST_USER = 'adam'
 EMAIL_HOST_PASSWORD = 'H0m3P13@53'
 EMAIL_USE_TLS = True
 EMAIL_SUBJECT_PREFIX = "[Lovely Spam App] "
+SERVER_EMAIL = "app@lovelyspam.com"

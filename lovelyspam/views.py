@@ -116,15 +116,13 @@ def doPost(request,targetID):
     if theTarget.successString in out:
         mail_admins(
             'I just posted!', 
-            'Request was  : %s\n\nOutput was : %s' % (req,out),
-            'updates@lovelyspam.com'
+            'Request was  : %s\n\nOutput was : %s' % (req,out)
             )
         return HttpResponse("You just spammed some pedo's days")
     else:
         mail_admins(
             'Post failed for some reason!', 
-            'Request was  : %s\n\nOutput was : %s' % (req,out),
-            'errors@lovelyspam.com'
+            'Request was  : %s\n\nOutput was : %s' % (req,out)
             )
         return HttpResponse("Something went wrong, please try again.")
 
